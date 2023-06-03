@@ -87,7 +87,7 @@ declare_elements! {
         media: String, // FIXME media query
         nonce: Nonce,
         title: String, // FIXME
-    } in [MetadataContent] with TextNode;
+    } in [MetadataContent] with UnsafeTextNode;
     title in [MetadataContent] with TextNode;
 
     // Flow
@@ -498,6 +498,20 @@ fn test_js() {
     let frag: DOMTree<String> = html!(<script>{unsafe_text!("console.log('{}')", "sup")}</script>);
 
     assert_eq!("<script>console.log('sup')</script>", frag.to_string());
+}
+
+#[test]
+fn test_style() {
+    use crate as axohtml;
+    use crate::{dom::DOMTree, html, unsafe_text};
+
+    let frag: DOMTree<String> =
+        html!(<style>{unsafe_text!("body {{ font-family: '{}'; }}", "Fira Code")}</style>);
+
+    assert_eq!(
+        "<style>body { font-family: 'Fira Code'; }</style>",
+        frag.to_string()
+    );
 }
 
 #[test]
